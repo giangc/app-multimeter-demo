@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
+import { useLanguage } from '../LanguageContext.jsx';
 
 const AnalogMultimeterSimulator = () => {
+  const { t } = useLanguage();
   const [needlePosition, setNeedlePosition] = useState(50);
   const [selectedRange, setSelectedRange] = useState('DCV-50');
   const [selectedFunction, setSelectedFunction] = useState('DCV');
@@ -161,11 +163,11 @@ const AnalogMultimeterSimulator = () => {
     const value = currentValue;
     const tolerance = 0.03;
     return [
-      { label: 'Digital Display', value: value.toFixed(4), unit: currentRange.scale === 'ohm' ? 'Ω' : selectedFunction === 'DCmA' ? 'mA' : 'V' },
-      { label: 'Min (±3% tol.)', value: (value * (1 - tolerance)).toFixed(4), unit: '' },
-      { label: 'Max (±3% tol.)', value: (value * (1 + tolerance)).toFixed(4), unit: '' },
-      { label: 'Scale Reading', value: `${needlePosition.toFixed(1)}%`, unit: 'of scale' },
-      { label: 'Accuracy Class', value: currentRange.scale === 'high' ? '1.5' : '2.5', unit: '' },
+      { label: t('conversions.digitalDisplay'), value: value.toFixed(4), unit: currentRange.scale === 'ohm' ? 'Ω' : selectedFunction === 'DCmA' ? 'mA' : 'V' },
+      { label: t('conversions.minTolerance'), value: (value * (1 - tolerance)).toFixed(4), unit: '' },
+      { label: t('conversions.maxTolerance'), value: (value * (1 + tolerance)).toFixed(4), unit: '' },
+      { label: t('conversions.scaleReading'), value: `${needlePosition.toFixed(1)}%`, unit: t('controls.ofScale') },
+      { label: t('conversions.accuracyClass'), value: currentRange.scale === 'high' ? '1.5' : '2.5', unit: '' },
     ];
   };
 
@@ -332,13 +334,13 @@ const AnalogMultimeterSimulator = () => {
       `}</style>
 
       <h1 className="text-2xl font-bold text-amber-400 mb-4 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-        ANALOG MULTIMETER SIMULATOR
+        {t('title')}
       </h1>
 
       <div className="meter-body p-4 w-full max-w-md">
         <div className="text-center mb-2">
           <span className="text-amber-500 text-xs tracking-widest font-semibold" style={{ fontFamily: "'Oswald', sans-serif" }}>
-            MODEL YX-360TR
+            {t('model')}
           </span>
         </div>
 
@@ -356,7 +358,7 @@ const AnalogMultimeterSimulator = () => {
             </defs>
 
             <text x="180" y="20" textAnchor="middle" fontSize="8" fill="#666" fontFamily="'Oswald', sans-serif" letterSpacing="2">
-              SANWA ELECTRIC INSTRUMENT
+              {t('brand')}
             </text>
 
             <ScaleArc radius={145} startAngle={-135} endAngle={-45} color="#c92a2a" width={6} />
@@ -387,13 +389,13 @@ const AnalogMultimeterSimulator = () => {
             <rect x="140" y="175" width="80" height="15" rx="2" fill="#f5f5f5" stroke="#ccc" />
             <rect x="145" y="178" width="30" height="9" fill="#87ceeb" opacity="0.6" />
             <text x="180" y="186" textAnchor="middle" fontSize="6" fill="#333" fontFamily="'Courier Prime', monospace">
-              MIRROR
+              {t('mirror')}
             </text>
           </svg>
 
           <div className="absolute bottom-2 left-4 right-4 flex justify-between text-xs">
             <span className="text-gray-600 font-semibold" style={{ fontFamily: "'Courier Prime', monospace" }}>-</span>
-            <span className="text-amber-700 font-bold" style={{ fontFamily: "'Oswald', sans-serif" }}>MADE IN JAPAN</span>
+            <span className="text-amber-700 font-bold" style={{ fontFamily: "'Oswald', sans-serif" }}>{t('madeIn')}</span>
             <span className="text-gray-600 font-semibold" style={{ fontFamily: "'Courier Prime', monospace" }}>+</span>
           </div>
         </div>
@@ -406,7 +408,7 @@ const AnalogMultimeterSimulator = () => {
               className={`button-func px-4 py-2 rounded-lg text-white font-bold text-sm ${selectedFunction === func ? 'active' : ''}`}
               style={{ fontFamily: "'Oswald', sans-serif" }}
             >
-              {func}
+              {t(`functions.${func}`)}
             </button>
           ))}
         </div>
@@ -429,8 +431,12 @@ const AnalogMultimeterSimulator = () => {
         </div>
 
         <div className="mt-4 flex justify-around">
-          {['-COM', '+V/Ω/A', '10A'].map((label, i) => (
-            <div key={label} className="flex flex-col items-center">
+          {[
+            { key: 'com', label: t('terminals.com') },
+            { key: 'positive', label: t('terminals.positive') },
+            { key: 'tenA', label: t('terminals.tenA') }
+          ].map(({ key, label }) => (
+            <div key={key} className="flex flex-col items-center">
               <div className="terminal w-8 h-8 rounded-full flex items-center justify-center">
                 <div className="w-2 h-2 bg-black rounded-full" />
               </div>
@@ -444,7 +450,7 @@ const AnalogMultimeterSimulator = () => {
 
       <div className="w-full max-w-md mt-4 px-4">
         <label className="block text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          NEEDLE POSITION
+          {t('controls.needlePosition')}
         </label>
         <input
           type="range"
@@ -463,14 +469,14 @@ const AnalogMultimeterSimulator = () => {
 
         <div className="mt-4">
           <label className="block text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
-            TYPE READING (numeric value uses current function/range)
+            {t('controls.typeReading')}
           </label>
           <div className="flex gap-2">
             <input
               type="text"
               value={typedReading}
               onChange={(e) => setTypedReading(e.target.value)}
-              placeholder={`e.g., 5.000 (${selectedFunction}, ${getCurrentRange().label})`}
+              placeholder={`vd: 5.000 (${t(`functions.${selectedFunction}`)}, ${getCurrentRange().label})`}
               className="w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-slate-200"
               style={{ fontFamily: "'Courier Prime', monospace" }}
             />
@@ -479,7 +485,7 @@ const AnalogMultimeterSimulator = () => {
               className="px-3 py-2 rounded-md bg-amber-500 text-black font-bold"
               style={{ fontFamily: "'Oswald', sans-serif" }}
             >
-              Set
+              {t('controls.set')}
             </button>
           </div>
         </div>
@@ -487,19 +493,19 @@ const AnalogMultimeterSimulator = () => {
 
       <div className="w-full max-w-md mt-4 conversion-panel p-4">
         <h2 className="text-amber-400 font-bold text-lg mb-3 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          📊 CURRENT READING
+          {t('panels.currentReading')}
         </h2>
         <div className="bg-black/50 rounded-lg p-4 mb-4 border border-amber-500/30">
           <div className="text-3xl font-bold text-green-400 text-center" style={{ fontFamily: "'Courier Prime', monospace" }}>
             {formatValue(currentValue, currentRange)}
           </div>
           <div className="text-center text-gray-400 text-sm mt-1">
-            Range: {currentRange.label}
+            {t('controls.range')} {currentRange.label}
           </div>
         </div>
 
         <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          SCALE TRANSLATION
+          {t('panels.scaleTranslation')}
         </h3>
         <div className="grid grid-cols-2 gap-2 mb-4">
           {getScaleTranslations().map(item => (
@@ -521,7 +527,7 @@ const AnalogMultimeterSimulator = () => {
         </div>
 
         <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          VERSION CONVERSION
+          {t('panels.versionConversion')}
         </h3>
         <div className="space-y-2">
           {getVersionConversions().map((item, i) => (
@@ -536,8 +542,8 @@ const AnalogMultimeterSimulator = () => {
       </div>
 
       <div className="w-full max-w-md mt-4 text-center text-gray-500 text-xs pb-4" style={{ fontFamily: "'Courier Prime', monospace" }}>
-        <p>Interactive Analog Multimeter Simulator</p>
-        <p>For educational purposes only</p>
+        <p>{t('footer.description')}</p>
+        <p>{t('footer.purpose')}</p>
       </div>
     </div>
   );
