@@ -3,6 +3,11 @@ export const translations = {
     title: "ANALOG MULTIMETER SIMULATOR",
     model: "MODEL YX-360TR",
     brand: "SANWA ELECTRIC INSTRUMENT",
+    uiVariant: {
+      classic: "Classic",
+      modern: "Modern",
+      toggle: "Switch UI Style"
+    },
     functions: {
       DCV: "DCV",
       ACV: "ACV",
@@ -44,6 +49,11 @@ export const translations = {
     title: "MÁY ĐO ĐA NĂNG TƯƠNG TỰ",
     model: "MÔ HÌNH YX-360TR",
     brand: "CÔNG TY ĐIỆN TỬ SANWA",
+    uiVariant: {
+      classic: "Cổ điển",
+      modern: "Hiện đại",
+      toggle: "Chuyển Kiểu Giao Diện"
+    },
     functions: {
       DCV: "ĐIỆN ÁP DC",
       ACV: "ĐIỆN ÁP AC",

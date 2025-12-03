@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext.jsx';
 import { ranges } from '../constants/multimeterRanges.js';
 import { 
@@ -7,8 +7,10 @@ import {
   calculateNeedleAngle,
   parseTypedReading 
 } from '../utils/multimeterCalculations.js';
+import { UI_VARIANTS } from '../constants/uiVariants.js';
 import { MeterStyles } from './multimeter/MeterStyles.jsx';
 import { MeterFace } from './multimeter/MeterFace.jsx';
+import { MeterFaceModern } from './multimeter/MeterFaceModern.jsx';
 import { FunctionButtons } from './multimeter/FunctionButtons.jsx';
 import { RangeButtons } from './multimeter/RangeButtons.jsx';
 import { Terminals } from './multimeter/Terminals.jsx';
@@ -16,7 +18,7 @@ import { NeedleControl } from './multimeter/NeedleControl.jsx';
 import { ReadingInput } from './multimeter/ReadingInput.jsx';
 import { ConversionPanel } from './multimeter/ConversionPanel.jsx';
 
-const AnalogMultimeterSimulator = () => {
+const AnalogMultimeterSimulator = ({ variant, onVariantChange }) => {
   const { t } = useLanguage();
   const [needlePosition, setNeedlePosition] = useState(50);
   const [selectedRange, setSelectedRange] = useState('DCV-50');
@@ -88,7 +90,11 @@ const AnalogMultimeterSimulator = () => {
             </span>
           </div>
 
-          <MeterFace needleAngle={needleAngle} />
+          {variant === UI_VARIANTS.MODERN ? (
+            <MeterFaceModern needleAngle={needleAngle} />
+          ) : (
+            <MeterFace needleAngle={needleAngle} />
+          )}
 
           <FunctionButtons 
             selectedFunction={selectedFunction}

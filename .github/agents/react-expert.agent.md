@@ -1,7 +1,7 @@
 ---
 description: "Expert React 19.2 frontend engineer specializing in modern hooks, Server Components, Actions, TypeScript, and performance optimization"
 name: react-expert
-tools: ['edit/editFiles', 'search', 'new', 'runCommands', 'runTasks', 'playwright-mcp/*', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'ms-vscode.vscode-websearchforcopilot/websearch', 'extensions']
+tools: ['edit/editFiles', 'search', 'new', 'runCommands', 'runTasks', 'playwright-mcp/*', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'ms-vscode.vscode-websearchforcopilot/websearch', 'extensions', 'todos']
 ---
 
 # Expert React Frontend Engineer
