@@ -77,3 +77,6 @@ jspm_packages/
 
 # Vite cache
 .vite
+
+.playwright-mcp/
+

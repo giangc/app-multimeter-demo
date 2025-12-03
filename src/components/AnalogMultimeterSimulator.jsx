@@ -239,7 +239,7 @@ const AnalogMultimeterSimulator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-black p-4 flex flex-col items-center font-sans">
+    <div className="h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-black flex flex-col font-sans overflow-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Oswald:wght@400;500;600&display=swap');
         
@@ -333,18 +333,20 @@ const AnalogMultimeterSimulator = () => {
         }
       `}</style>
 
-      <h1 className="text-2xl font-bold text-amber-400 mb-4 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-        {t('title')}
-      </h1>
+      {/* Fixed Header and Meter Section */}
+      <div className="flex-shrink-0 p-2 flex flex-col items-center">
+        <h1 className="text-xl font-bold text-amber-400 mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
+          {t('title')}
+        </h1>
 
-      <div className="meter-body p-4 w-full max-w-md">
-        <div className="text-center mb-2">
+        <div className="meter-body p-3 w-full max-w-md">
+        <div className="text-center mb-1">
           <span className="text-amber-500 text-xs tracking-widest font-semibold" style={{ fontFamily: "'Oswald', sans-serif" }}>
             {t('model')}
           </span>
         </div>
 
-        <div className="meter-face p-4 relative overflow-hidden">
+        <div className="meter-face p-2 relative overflow-hidden">
           <svg viewBox="0 0 360 220" className="w-full">
             <defs>
               <linearGradient id="needleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -400,12 +402,12 @@ const AnalogMultimeterSimulator = () => {
           </div>
         </div>
 
-        <div className="mt-4 flex justify-center gap-2 flex-wrap">
+        <div className="mt-2 flex justify-center gap-2 flex-wrap">
           {['DCV', 'ACV', 'DCmA', 'OHM'].map(func => (
             <button
               key={func}
               onClick={() => handleFunctionChange(func)}
-              className={`button-func px-4 py-2 rounded-lg text-white font-bold text-sm ${selectedFunction === func ? 'active' : ''}`}
+              className={`button-func px-3 py-1.5 rounded-lg text-white font-bold text-xs ${selectedFunction === func ? 'active' : ''}`}
               style={{ fontFamily: "'Oswald', sans-serif" }}
             >
               {t(`functions.${func}`)}
@@ -413,12 +415,12 @@ const AnalogMultimeterSimulator = () => {
           ))}
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mt-2 grid grid-cols-3 gap-1.5">
           {ranges[selectedFunction]?.map(range => (
             <button
               key={range.id}
               onClick={() => setSelectedRange(range.id)}
-              className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 selectedRange === range.id
                   ? 'bg-amber-500 text-black shadow-lg'
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -430,120 +432,124 @@ const AnalogMultimeterSimulator = () => {
           ))}
         </div>
 
-        <div className="mt-4 flex justify-around">
+        <div className="mt-2 flex justify-around">
           {[
             { key: 'com', label: t('terminals.com') },
             { key: 'positive', label: t('terminals.positive') },
             { key: 'tenA', label: t('terminals.tenA') }
           ].map(({ key, label }) => (
             <div key={key} className="flex flex-col items-center">
-              <div className="terminal w-8 h-8 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-black rounded-full" />
+              <div className="terminal w-6 h-6 rounded-full flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-black rounded-full" />
               </div>
-              <span className="text-xs text-gray-400 mt-1 font-semibold" style={{ fontFamily: "'Courier Prime', monospace" }}>
+              <span className="text-xs text-gray-400 mt-0.5 font-semibold" style={{ fontFamily: "'Courier Prime', monospace" }}>
                 {label}
               </span>
             </div>
           ))}
         </div>
       </div>
+      </div>
 
-      <div className="w-full max-w-md mt-4 px-4">
-        <label className="block text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          {t('controls.needlePosition')}
-        </label>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="0.1"
-          value={needlePosition}
-          onChange={handleSliderChange}
-          className="slider-track w-full cursor-pointer"
-        />
-        <div className="flex justify-between text-xs text-gray-400 mt-1" style={{ fontFamily: "'Courier Prime', monospace" }}>
-          <span>0%</span>
-          <span className="text-amber-400 font-bold text-lg">{needlePosition.toFixed(1)}%</span>
-          <span>100%</span>
-        </div>
-
-        <div className="mt-4">
+      {/* Scrollable Controls Section */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="w-full max-w-md mx-auto">
           <label className="block text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
-            {t('controls.typeReading')}
+            {t('controls.needlePosition')}
           </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={typedReading}
-              onChange={(e) => setTypedReading(e.target.value)}
-              placeholder={`vd: 5.000 (${t(`functions.${selectedFunction}`)}, ${getCurrentRange().label})`}
-              className="w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-slate-200"
-              style={{ fontFamily: "'Courier Prime', monospace" }}
-            />
-            <button
-              onClick={() => parseTypedReading(typedReading)}
-              className="px-3 py-2 rounded-md bg-amber-500 text-black font-bold"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              {t('controls.set')}
-            </button>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="0.1"
+            value={needlePosition}
+            onChange={handleSliderChange}
+            className="slider-track w-full cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-gray-400 mt-1" style={{ fontFamily: "'Courier Prime', monospace" }}>
+            <span>0%</span>
+            <span className="text-amber-400 font-bold text-lg">{needlePosition.toFixed(1)}%</span>
+            <span>100%</span>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-amber-400 text-sm font-semibold mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              {t('controls.typeReading')}
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={typedReading}
+                onChange={(e) => setTypedReading(e.target.value)}
+                placeholder={`vd: 5.000 (${t(`functions.${selectedFunction}`)}, ${getCurrentRange().label})`}
+                className="w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-slate-200"
+                style={{ fontFamily: "'Courier Prime', monospace" }}
+              />
+              <button
+                onClick={() => parseTypedReading(typedReading)}
+                className="px-3 py-2 rounded-md bg-amber-500 text-black font-bold"
+                style={{ fontFamily: "'Oswald', sans-serif" }}
+              >
+                {t('controls.set')}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="w-full max-w-md mt-4 conversion-panel p-4">
-        <h2 className="text-amber-400 font-bold text-lg mb-3 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          {t('panels.currentReading')}
-        </h2>
-        <div className="bg-black/50 rounded-lg p-4 mb-4 border border-amber-500/30">
-          <div className="text-3xl font-bold text-green-400 text-center" style={{ fontFamily: "'Courier Prime', monospace" }}>
-            {formatValue(currentValue, currentRange)}
+        <div className="w-full max-w-md mx-auto mt-4 conversion-panel p-4">
+          <h2 className="text-amber-400 font-bold text-lg mb-3 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
+            {t('panels.currentReading')}
+          </h2>
+          <div className="bg-black/50 rounded-lg p-4 mb-4 border border-amber-500/30">
+            <div className="text-3xl font-bold text-green-400 text-center" style={{ fontFamily: "'Courier Prime', monospace" }}>
+              {formatValue(currentValue, currentRange)}
+            </div>
+            <div className="text-center text-gray-400 text-sm mt-1">
+              {t('controls.range')} {currentRange.label}
+            </div>
           </div>
-          <div className="text-center text-gray-400 text-sm mt-1">
-            {t('controls.range')} {currentRange.label}
-          </div>
-        </div>
 
-        <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          {t('panels.scaleTranslation')}
-        </h3>
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          {getScaleTranslations().map(item => (
-            <div
-              key={item.id}
-              className={`p-2 rounded-lg text-center transition-all ${
-                item.id === selectedRange
-                  ? 'bg-amber-500/20 border-2 border-amber-500'
-                  : 'bg-slate-700/50 border border-slate-600'
-              }`}
-            >
-              <div className="text-xs text-gray-400" style={{ fontFamily: "'Oswald', sans-serif" }}>{item.label}</div>
-              <div className={`text-sm font-bold ${item.id === selectedRange ? 'text-amber-400' : 'text-gray-200'}`} 
-                   style={{ fontFamily: "'Courier Prime', monospace" }}>
-                {item.formatted}
+          <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
+            {t('panels.scaleTranslation')}
+          </h3>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {getScaleTranslations().map(item => (
+              <div
+                key={item.id}
+                className={`p-2 rounded-lg text-center transition-all ${
+                  item.id === selectedRange
+                    ? 'bg-amber-500/20 border-2 border-amber-500'
+                    : 'bg-slate-700/50 border border-slate-600'
+                }`}
+              >
+                <div className="text-xs text-gray-400" style={{ fontFamily: "'Oswald', sans-serif" }}>{item.label}</div>
+                <div className={`text-sm font-bold ${item.id === selectedRange ? 'text-amber-400' : 'text-gray-200'}`} 
+                     style={{ fontFamily: "'Courier Prime', monospace" }}>
+                  {item.formatted}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
+            {t('panels.versionConversion')}
+          </h3>
+          <div className="space-y-2">
+            {getVersionConversions().map((item, i) => (
+              <div key={i} className="flex justify-between items-center bg-slate-700/30 px-3 py-2 rounded-lg">
+                <span className="text-gray-400 text-sm">{item.label}</span>
+                <span className="text-cyan-400 font-bold" style={{ fontFamily: "'Courier Prime', monospace" }}>
+                  {item.value} {item.unit}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <h3 className="text-amber-400 font-semibold text-sm mb-2 tracking-wider" style={{ fontFamily: "'Oswald', sans-serif" }}>
-          {t('panels.versionConversion')}
-        </h3>
-        <div className="space-y-2">
-          {getVersionConversions().map((item, i) => (
-            <div key={i} className="flex justify-between items-center bg-slate-700/30 px-3 py-2 rounded-lg">
-              <span className="text-gray-400 text-sm">{item.label}</span>
-              <span className="text-cyan-400 font-bold" style={{ fontFamily: "'Courier Prime', monospace" }}>
-                {item.value} {item.unit}
-              </span>
-            </div>
-          ))}
+        <div className="w-full max-w-md mx-auto mt-4 text-center text-gray-500 text-xs pb-4" style={{ fontFamily: "'Courier Prime', monospace" }}>
+          <p>{t('footer.description')}</p>
+          <p>{t('footer.purpose')}</p>
         </div>
-      </div>
-
-      <div className="w-full max-w-md mt-4 text-center text-gray-500 text-xs pb-4" style={{ fontFamily: "'Courier Prime', monospace" }}>
-        <p>{t('footer.description')}</p>
-        <p>{t('footer.purpose')}</p>
       </div>
     </div>
   );
